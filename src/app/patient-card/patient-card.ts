@@ -10,8 +10,6 @@ import { PatientService } from '../services/patient-service';
 })
 export class PatientCard {
   @Input() patient !: Patient;
-  @Output() onDarDeBaja: EventEmitter<string> = new EventEmitter<string>();
-  @Output() onAdministrarCura: EventEmitter<Patient> = new EventEmitter<Patient>();
 
   private patientService = inject(PatientService);
 
@@ -19,8 +17,8 @@ export class PatientCard {
     return this.patient.infection > 50 ? 'red' : 'lime';
   }
 
-  administrarCura(patient: Patient) {
-    this.onAdministrarCura.emit(patient);
+  administrarCura() {
+    this.patientService.curePatient(this.patient.id);
   }
 
   darDeBaja(id: string) {

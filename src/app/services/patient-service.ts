@@ -35,4 +35,16 @@ export class PatientService {
   deletePatient(id: string) {
     this._patientsSubject.next(this._patientsSubject.value.filter(patient => patient.id !== id))
   }
+
+  curePatient(id: string) {
+    const patients = this._patientsSubject.value;
+    const patient = patients.find(p => p.id === id);
+    if (patient) {
+      patient.infection -= 10;
+      if (patient.infection < 0) patient.infection = 0;
+      if (patient.infection > 70) patient.status = 'critico';
+      else patient.status = 'estable';
+      this._patientsSubject.next(patients);
+    }
+  }
 }

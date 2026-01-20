@@ -10,7 +10,7 @@
         <p class="nivel">Nivel Infección: {{ patient.infection }}%
         </p>
     </div>
-    <div class="acciones"> <button (click)="administrarCura(patient)" [disabled]="patient.status ===
+    <div class="acciones"> <button (click)="administrarCura()" [disabled]="patient.status ===
 'transformado'"> 💉 SUERO </button>
         <button class="btn-eliminar" (click)="darDeBaja(patient.id)"> ☠️
             BAJA </button>

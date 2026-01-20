@@ -23,19 +23,7 @@ export class App {
   patients$: Observable<Patient[]>;
   name: string = '';
 
-  administrarCura(p: Patient) {
-    if (p.infection > 0) p.infection -= 10;
-    if (p.infection < 0) p.infection = 0;
-    this.actualizarEstado(p);
-  }
-  darDeBaja(id: string) {
-    // this.patients = this.patients.filter(p => p.id !== id);
-  }
-  private actualizarEstado(p: Patient) {
-    if (p.infection > 70) p.status = 'critico';
-    else p.status = 'estable';
-  }
-
+  
   addPatient() {
     this.patientService.addPatient(this.name);
     // this.patients = this.patientService.getPatients();
