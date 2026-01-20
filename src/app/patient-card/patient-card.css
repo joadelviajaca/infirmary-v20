@@ -1,0 +1,38 @@
+.tarjeta-paciente {
+    background: #222;
+    border: 1px solid #444;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.barra-contenedor {
+    height: 10px;
+    background: #000;
+    margin: 10px 0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.barra-progreso {
+    height: 100%;
+    transition: width 0.3s;
+}
+
+button {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+}
+
+.btn-eliminar {
+    background: #500;
+    color: white;
+}
+
+
+.acciones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}

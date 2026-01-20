@@ -3,7 +3,7 @@
     BIO-SEÑALES</h1>
   <div class="grid-pacientes">
     @for (patient of patients; track patient.id) {
-      <app-patient-card [patient]="patient"></app-patient-card>
+      <app-patient-card [patient]="patient" (onDarDeBaja)="darDeBaja($event)" (onAdministrarCura)="administrarCura($event)"></app-patient-card>
     }
   </div>
 </div>

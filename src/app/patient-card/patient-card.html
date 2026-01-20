@@ -5,7 +5,7 @@
                 patient.status | uppercase }}</strong></p>
         <div class="barra-contenedor">
             <div class="barra-progreso" [style.width.%]="patient.infection"
-                [style.background-color]="patient.infection > 50 ? 'red' : 'lime'"> </div>
+                [style.background-color]="color"> </div>
         </div>
         <p class="nivel">Nivel Infección: {{ patient.infection }}%
         </p>
