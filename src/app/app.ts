@@ -1,5 +1,5 @@
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, Signal, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { PatientCard } from './patient-card/patient-card';
 import { PatientService } from './services/patient-service';
@@ -16,11 +16,13 @@ export class App {
   // Forma tradicional de inyección de dependencias
   constructor(private patientService: PatientService) {
     // this.patients$ = this.patientService.getPatients();
-    this.patients$ = this.patientService.patients$;
+    // this.patients$ = this.patientService.patients$;
+    this.patients = this.patientService.patients;
 
   }
 
-  patients$: Observable<Patient[]>;
+  // patients$: Observable<Patient[]>;
+  patients : Signal<Patient[]>;
   name: string = '';
 
   
