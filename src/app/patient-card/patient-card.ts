@@ -1,5 +1,6 @@
 import { UpperCasePipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { PatientService } from '../services/patient-service';
 
 @Component({
   selector: 'app-patient-card',
@@ -8,20 +9,23 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './patient-card.css',
 })
 export class PatientCard {
-  @Input() patient !: Patient; 
-  @Output() onDarDeBaja : EventEmitter<string> = new EventEmitter<string>();
-  @Output() onAdministrarCura : EventEmitter<Patient> = new EventEmitter<Patient>();
+  @Input() patient !: Patient;
+  @Output() onDarDeBaja: EventEmitter<string> = new EventEmitter<string>();
+  @Output() onAdministrarCura: EventEmitter<Patient> = new EventEmitter<Patient>();
 
-  get color():string{
+  private patientService = inject(PatientService);
+
+  get color(): string {
     return this.patient.infection > 50 ? 'red' : 'lime';
   }
 
-  administrarCura(patient:Patient){
+  administrarCura(patient: Patient) {
     this.onAdministrarCura.emit(patient);
   }
-   
-  darDeBaja(id:string){
-    this.onDarDeBaja.emit(id);
+
+  darDeBaja(id: string) {
+    // this.onDarDeBaja.emit(id);
+    this.patientService.deletePatient(id);
   }
 
 }

@@ -1,9 +1,14 @@
 <div class="enfermeria-container">
   <h1>🏥 Z-0: MONITOR DE
     BIO-SEÑALES</h1>
+  <label for="name">Name:</label>
+  <input type="text" name="name" [(ngModel)]="name">
+  <button type="button" (click)="addPatient()">Añadir</button>
+  <p>Name: {{name}}</p>
   <div class="grid-pacientes">
-    @for (patient of patients; track patient.id) {
-      <app-patient-card [patient]="patient" (onDarDeBaja)="darDeBaja($event)" (onAdministrarCura)="administrarCura($event)"></app-patient-card>
+    @for (patient of patients$|async; track patient.id) {
+    <app-patient-card [patient]="patient" (onDarDeBaja)="darDeBaja($event)"
+      (onAdministrarCura)="administrarCura($event)"></app-patient-card>
     }
   </div>
 </div>
