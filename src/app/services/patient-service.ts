@@ -1,72 +1,73 @@
-import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, signal, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PatientService {
+  private URLBase = 'http://localhost:3000/patients';
+  private _patiensSubject = new BehaviorSubject<Patient[]>([]);
+  patients$ = this._patiensSubject.asObservable();
 
-  private _patientsSignal = signal<Patient[]>([
-    { id: "1", name: 'Marcus Fenix', infection: 15, status: 'estable' },
-    { id: "2", name: 'Sarah Connor', infection: 85, status: 'critico' },
-    { id: "3", name: 'Ellen Ripley', infection: 0, status: 'estable' }
-  ])
+  private httpClient: HttpClient = inject(HttpClient);
+  constructor() {
+    this.fetchPatients();
+  }
 
-  // private _patientsSubject: BehaviorSubject<Patient[]> = new BehaviorSubject<Patient[]>([
-  //   { id: "1", name: 'Marcus Fenix', infection: 15, status: 'estable' },
-  //   { id: "2", name: 'Sarah Connor', infection: 85, status: 'critico' },
-  //   { id: "3", name: 'Ellen Ripley', infection: 0, status: 'estable' }
-  // ])
-
-  // patients$ = this._patientsSubject.asObservable();
-
-  patients = this._patientsSignal.asReadonly();
-
-  // getPatients(): Observable<Patient[]> {
-  //   return this._patientsSubject.asObservable();
-  // }
+  fetchPatients(): void {
+    this.httpClient.get<Patient[]>(this.URLBase).subscribe({
+      next: (patients) => this._patiensSubject.next(patients),
+      error: (error) => console.log('Error obteniendo pacientes: ', error)
+    });
+  }
 
   addPatient(name: string) {
-    const newPatient: Patient = {
+    const newPatient = {
       id: Date.now().toString(),
       name,
-      infection: 0,
-      status: 'estable'
+      infection: 0
     }
-    // const actualPacients = this._patientsSubject.value;
-    // actualPacients.push(newPatient);
-    // this._patientsSubject.next(actualPacients)
-    // // this.patients.push(newPatient);
-    this._patientsSignal.update(patients => [...patients, newPatient]);
+    this.httpClient.post<Patient>(this.URLBase, newPatient)
+      .subscribe({
+        next: (patient) => {
+          // this.fetchPatients(),
+          const currentPatients = this._patiensSubject.getValue();
+          this._patiensSubject.next([...currentPatients, patient]);
+        },
+        error: (error) => console.log('Error añadiendo paciente: ', error)
+      });
   }
 
   deletePatient(id: string) {
-    // this._patientsSubject.next(this._patientsSubject.value.filter(patient => patient.id !== id))
-    this._patientsSignal.update(patients => patients.filter(patient => patient.id !== id));
+    this.httpClient.delete<Patient>(`${this.URLBase}/${id}`)
+      .subscribe({
+        next: () => {
+          // this.fetchPatients(),
+          const currentPatients = this._patiensSubject.getValue();
+          const updatedPatients = currentPatients.filter(patient => patient.id !== id);
+          this._patiensSubject.next(updatedPatients);
+        },
+        error: (error) => console.log('Error eliminando paciente: ', error)
+      });
   }
 
   curePatient(id: string) {
-    this._patientsSignal.update(patients => {
-      return patients.map(patient => {
-        if (patient.id === id) {
-          let newInfection = patient.infection - 10;
-          if (newInfection < 0) newInfection = 0;
-          let newStatus = 'estable';
-          if (newInfection > 70) newStatus = 'critico';
-          return { ...patient, infection: newInfection, status: newStatus } as Patient;
-        }
-        return patient;
-      });
-    });
-
-    // const patients = this._patientsSubject.value;
-    // const patient = patients.find(p => p.id === id);
-    // if (patient) {
-    //   patient.infection -= 10;
-    //   if (patient.infection < 0) patient.infection = 0;
-    //   if (patient.infection > 70) patient.status = 'critico';
-    //   else patient.status = 'estable';
-    //   this._patientsSubject.next(patients);
-    // }
+    const currentPatients = this._patiensSubject.getValue();
+    const patientToCure = currentPatients.find(patient => patient.id === id);
+    if (patientToCure) {
+      const infectionLevel = patientToCure.infection;
+      const curedInfectionLevel = infectionLevel - 10 < 0 ? 0 : infectionLevel - 10;
+      const updatedPatient = { ...patientToCure, infection: curedInfectionLevel };
+      this.httpClient.put<Patient>(`${this.URLBase}/${id}`, updatedPatient)
+        .subscribe({
+          next: (patient) => {
+            // this.fetchPatients(),
+            const updatedPatients = currentPatients.map(p => p.id === id ? patient : p);
+            this._patiensSubject.next(updatedPatients);
+          },
+          error: (error) => console.log('Error curando paciente: ', error)
+        });
+    }
   }
 }

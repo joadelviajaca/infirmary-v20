@@ -17,17 +17,30 @@ export class App {
   constructor(private patientService: PatientService) {
     // this.patients$ = this.patientService.getPatients();
     // this.patients$ = this.patientService.patients$;
-    this.patients = this.patientService.patients;
+    // this.loadPatients();
+    this.patients$ = this.patientService.patients$;
+
 
   }
 
-  // patients$: Observable<Patient[]>;
-  patients : Signal<Patient[]>;
+  // loadPatients() {
+  //   this.patientService.getPatients()
+  //   .subscribe({
+  //     next: (patients) => this.patients = patients,
+  //     error: (error) => console.log('Error obteniendo pacientes: ', error)
+  //   })
+  // }
+  patients$: Observable<Patient[]>;
+  // patients !: Patient[];
   name: string = '';
 
   
   addPatient() {
-    this.patientService.addPatient(this.name);
+    this.patientService.addPatient(this.name)
+    // .subscribe({
+    //   next: (patient) => this.loadPatients(), //this.patients.push(patient),
+    //   error: (error) => console.log('Error añadiendo paciente: ', error)  
+    // })
     // this.patients = this.patientService.getPatients();
   }
 }
